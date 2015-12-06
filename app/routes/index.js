@@ -1,6 +1,4 @@
-var request = require('request'),
-    request = require('request'),
-    Imagga = require('imagga');
+var request = require('request');
 
 exports.index = function(req, res){
   var path = 'about';
@@ -9,26 +7,32 @@ exports.index = function(req, res){
     name: path,
     description:'Sample links for the Imagga API',
     examples:[{
-      url:"/color?image=http://imagga.com/static/images/tagging/wind-farm-538576_640.jpg",
-      title:"Color information for the image at http://imagga.com/static/images/tagging/wind-farm-538576_640.jpg"
+      url:"/words?phrase=the quick brown fox jumps over the lazy dog",
+      title:"Text parsing for 'the quick brown fox jumps over the lazy dog'."
     }]
   });
 };
 
-exports.color = function(req, res){
+exports.words = function(req, res){
+  var path = (req.url.substring(1));
+  var query = req.query.phrase;
+  if((query != null) && query != "") {
 
-  var config = {
-    key:process.env.IMAGGA_KEY,
-    secret:process.env.IMAGGA_SECRET,
-    endpoint:process.env.IMAGGA_ENDPOINT,
-    image: req.query.image
+    var url = "http://parts-of-speech.info/tagger/postagger?text="+query;
+    request(url, function(err, response, body){
+      var data = JSON.stringify({
+        phrase: JSON.parse(body.split("callback(")[1].split(");")[0]).taggedText
+      });
+
+      res.end(data);
+    })
+  } else {
+
+    res.end(JSON.stringify({
+      error:"No valid query. Please use ?phrase=<sentence> to get a valid response."
+    }))
+
   }
-
-  var url = 'https://' + config.key + ':' + config.secret + "@" + config.endpoint + "/colors?url=" +config.image;
-
-  request({url: url}, function (error, response, body) {
-     res.end(body);
-  });
 };
 
 

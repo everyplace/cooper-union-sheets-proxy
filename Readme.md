@@ -1,1 +1,1 @@
-Cooper Union Imagga Proxy
+Cooper Union Words Proxy
