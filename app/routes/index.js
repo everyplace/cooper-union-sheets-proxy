@@ -5,7 +5,7 @@ exports.index = function(req, res){
   res.render('template', {
     title: 'Serving a real template',
     name: path,
-    description:'Sample links for the Imagga API',
+    description:'Sample links for the Parts of Speech API',
     examples:[{
       url:"/words?phrase=the quick brown fox jumps over the lazy dog",
       title:"Text parsing for 'the quick brown fox jumps over the lazy dog'."
