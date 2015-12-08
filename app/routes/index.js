@@ -1,5 +1,14 @@
 var request = require('request');
 
+exports.json = function(req, res, next) {
+  res.set({
+    'Content-Type':'application/json',
+    'Access-Control-Allow-Origin':'*'
+  });
+
+  next();
+};
+
 exports.index = function(req, res){
   var path = 'about';
   res.render('template', {

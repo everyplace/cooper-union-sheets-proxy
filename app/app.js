@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 //configure routes
 app.get('/test', routes.template);
 app.get('/', routes.index);
-app.get('/words', routes.words);
+app.get('/words', routes.json, routes.words);
 
 var server = http.createServer(app);
 (process.env.MODE == 'DEV') ? reload(server, app) : "";
