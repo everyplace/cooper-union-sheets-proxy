@@ -27,7 +27,14 @@ exports.words = function(req, res){
   var query = req.query.phrase;
   if((query != null) && query != "") {
 
-    var url = "http://parts-of-speech.info/tagger/postagger?text="+query;
+
+    query = query.split(" ").join("+");
+
+
+
+    var url = "http://parts-of-speech.info/tagger/postagger?language=en&text="+query;
+
+    console.log(url)
     request(url, function(err, response, body){
       var data = JSON.stringify({
         phrase: JSON.parse(body.split("callback(")[1].split(");")[0]).taggedText
