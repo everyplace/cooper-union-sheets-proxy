@@ -27,8 +27,10 @@ exports.index = function(req, res){
 exports.test = function(req, res) {
 
   // https://docs.google.com/spreadsheets/d/1NH905jK2KqEIN5-UQ0dm2yVNh8SKgxzKYHKRkwlbi8I/pubhtml
+  var spreadsheetID = req.query.url.split("/d/")[1].split("/")[0];
+  var data = JSON.parse(req.query.data);
 
-  var doc = new GoogleSpreadsheet('1NH905jK2KqEIN5-UQ0dm2yVNh8SKgxzKYHKRkwlbi8I');
+  var doc = new GoogleSpreadsheet(spreadsheetID);
   var sheet;
 
   async.series([
@@ -41,28 +43,18 @@ exports.test = function(req, res) {
     function getInfoAndWorksheets(step) {
       doc.getInfo(function(err, info) {
 
-
-
-        console.log('Loaded doc: '+info.title+' by '+info.author.email);
-        sheet = info.worksheets[0];
-        console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
+        // console.log('Loaded doc: '+info.title+' by '+info.author.email);
+        // sheet = info.worksheets[0];
+        // console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
         step();
       });
     },
     function postData(step) {
-
-
-      doc.addRow(sheet.id, {"col1":"hello","col2":"world"}, function(err, info){
-        step();
-      })
-
+      doc.addRow(sheet.id, data, function(err, info){
+        res.end(JSON.stringify({"success":true}));
+      });
     }
   ]);
-
-
-  console.log(req.query);
-  res.end();
-
 };
 
 
