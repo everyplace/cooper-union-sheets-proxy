@@ -27,12 +27,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 //configure routes
 app.get('/test', routes.template);
 app.get('/', routes.index);
-app.get('/words', routes.json, routes.words);
 
 var server = http.createServer(app);
-(process.env.MODE == 'DEV') ? reload(server, app) : "";
 
 //initiate the app server
 server.listen(app.get('port'), function(){
-  console.log("cooper union words proxy " + app.get('port'));
+  console.log("cooper union sheets proxy " + app.get('port'));
 });
