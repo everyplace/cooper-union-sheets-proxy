@@ -24,7 +24,7 @@ exports.index = function(req, res){
   });
 };
 
-exports.test = function(req, res) {
+exports.post = function(req, res) {
 
   // https://docs.google.com/spreadsheets/d/1NH905jK2KqEIN5-UQ0dm2yVNh8SKgxzKYHKRkwlbi8I/pubhtml
   var spreadsheetID = req.query.url.split("/d/")[1].split("/")[0];
