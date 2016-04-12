@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 //configure routes
-app.get('/test', routes.template);
+app.get('/test', routes.test);
 app.get('/', routes.index);
 
 var server = http.createServer(app);

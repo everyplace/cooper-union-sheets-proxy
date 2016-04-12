@@ -1,4 +1,6 @@
 var request = require('request');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var async = require('async');
 
 exports.json = function(req, res, next) {
   res.set({
@@ -22,35 +24,38 @@ exports.index = function(req, res){
   });
 };
 
-exports.words = function(req, res){
-  var path = (req.url.substring(1));
-  var query = req.query.phrase;
-  if((query != null) && query != "") {
+exports.test = function(req, res) {
 
+  // https://docs.google.com/spreadsheets/d/1NH905jK2KqEIN5-UQ0dm2yVNh8SKgxzKYHKRkwlbi8I/pubhtml
 
-    query = query.split(" ").join("+");
+  var doc = new GoogleSpreadsheet('1NH905jK2KqEIN5-UQ0dm2yVNh8SKgxzKYHKRkwlbi8I');
+  var sheet;
 
+  async.series([
+    function setAuth(step) {
+      // see notes below for authentication instructions!
+      var creds = JSON.parse(process.env.credentials);
 
+      doc.useServiceAccountAuth(creds, step);
+    },
+    function getInfoAndWorksheets(step) {
+      doc.getInfo(function(err, info) {
 
-    var url = "http://parts-of-speech.info/tagger/postagger?language=en&text="+query;
+        console.log(err, info);
 
-    console.log(url)
-    request(url, function(err, response, body){
-      var data = JSON.stringify({
-        phrase: JSON.parse(body.split("callback(")[1].split(");")[0]).taggedText
+        console.log('Loaded doc: '+info.title+' by '+info.author.email);
+        sheet = info.worksheets[0];
+        console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
+        step();
       });
+    }
+  ]);
 
-      res.end(data);
-    })
-  } else {
 
-    res.end(JSON.stringify({
-      error:"No valid query. Please use ?phrase=<sentence> to get a valid response."
-    }))
+  console.log(req.query);
+  res.end();
 
-  }
 };
-
 
 
 exports.template = function(req, res){
@@ -61,11 +66,11 @@ exports.template = function(req, res){
     page: (req.page) ? req.page : ""
   };
 
-  for (i in attributes) {
+  for (var i in attributes) {
     if(req[attributes[i]] !== undefined) {
       config[attributes[i]] = req[attributes[i]];
     }
   }
-  console.log(config)
+  console.log(config);
   res.render('template', config);
 };
